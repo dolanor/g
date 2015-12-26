@@ -112,9 +112,27 @@ func gfxLoop(w window.Window, r gfx.Renderer) {
 		w.Notify(events, window.AllEvents)
 
 		for event := range events {
-			switch event.(type) {
+			switch e := event.(type) {
 			case keyboard.TypedEvent:
 				fmt.Println("Pressed", event)
+			case keyboard.StateEvent:
+				trans := lmath.Vec3{}
+				switch e.Key {
+				case keyboard.ArrowLeft:
+					trans.X -= .1
+				case keyboard.ArrowRight:
+					trans.X += .1
+				case keyboard.ArrowUp:
+					trans.Z += .1
+				case keyboard.ArrowDown:
+					trans.Z -= .1
+				}
+				card.SetPos(lmath.Vec3{
+					card.Pos().X + trans.X,
+					0,
+					card.Pos().Z + trans.Z,
+				})
+
 			case window.FramebufferResized:
 				cam.Lock()
 				cam.SetPersp(r.Bounds(), camFOV, camNear, camFar)
